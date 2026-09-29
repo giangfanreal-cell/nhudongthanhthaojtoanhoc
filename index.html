@@ -3,147 +3,420 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Thử Thách Toán THCS</title>
+    <title>Hệ Thống Học Tập & Luyện Tập Trực Tuyến</title>
     
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome CDN for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     
-    <!-- Thư viện KaTeX tự động chuyển $...$ thành công thức toán -->
+    <!-- KaTeX CSS & JS for Math/Chemistry Formulas -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
     <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
 
     <style>
-        /* Tối ưu kích thước công thức toán cho vừa vặn với giao diện */
-        .katex {
-            font-size: 1.05em;
-        }
+        .katex { font-size: 1.05em; }
     </style>
 </head>
-<body class="bg-[#0b0f19] text-white min-h-screen flex items-center justify-center p-4 font-sans">
+<body class="bg-[#0f172a] text-slate-100 font-sans min-h-screen flex">
 
-    <!-- Card container chính -->
-    <div class="max-w-4xl w-full bg-[#131b2e] rounded-2xl p-6 sm:p-8 shadow-2xl border border-slate-800/80">
+    <!-- SIDEBAR / NAVIGATION -->
+    <aside class="w-64 bg-[#1e293b] border-r border-slate-700/60 hidden md:flex flex-col justify-between p-4 min-h-screen sticky top-0">
+        <div>
+            <!-- Logo -->
+            <div class="flex items-center gap-3 px-3 py-4 mb-6 border-b border-slate-700/50">
+                <div class="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center font-bold text-xl text-white">Z</div>
+                <div>
+                    <h1 class="font-bold text-lg text-white leading-tight">ZAL-CHEM</h1>
+                    <p class="text-xs text-slate-400">Student Portal</p>
+                </div>
+            </div>
+
+            <!-- Menu items -->
+            <nav class="space-y-1">
+                <button onclick="switchTab('profile')" id="nav-profile" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-slate-300 hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-user-graduate w-5 text-center"></i> Hồ sơ
+                </button>
+                <button onclick="switchTab('practice')" id="nav-practice" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-slate-300 hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-book-open w-5 text-center"></i> Luyện tập
+                </button>
+                <button onclick="switchTab('exam')" id="nav-exam" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-slate-300 hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-pen-to-square w-5 text-center"></i> Kỳ thi
+                </button>
+                <button onclick="switchTab('scores')" id="nav-scores" class="w-full flex items-center gap-3 px-4 py-3 rounded-xl font-medium text-slate-300 hover:bg-slate-800 transition">
+                    <i class="fa-solid fa-chart-line w-5 text-center"></i> Bảng điểm
+                </button>
+            </nav>
+        </div>
+
+        <!-- User Brief -->
+        <div class="p-3 bg-slate-800/60 rounded-xl border border-slate-700/50 flex items-center gap-3">
+            <div class="w-10 h-10 rounded-full bg-blue-500/20 text-blue-400 flex items-center justify-center font-bold">HS</div>
+            <div class="overflow-hidden">
+                <p class="text-sm font-semibold truncate">Nguyễn Văn A</p>
+                <p class="text-xs text-slate-400 truncate">Học sinh Lớp 12A1</p>
+            </div>
+        </div>
+    </aside>
+
+    <!-- MAIN CONTENT AREA -->
+    <main class="flex-1 p-4 sm:p-8 max-w-6xl mx-auto">
         
-        <!-- Header -->
-        <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
-            <div>
-                <h1 class="text-2xl sm:text-3xl font-bold text-white tracking-wide">Thử Thách Toán THCS</h1>
-                <p class="text-slate-400 text-sm mt-1">Ôn tập kiến thức Toán Lớp 6 - 9 qua câu hỏi trắc nghiệm</p>
-            </div>
-            <div class="inline-flex items-center gap-1.5 bg-[#251d10] text-[#f59e0b] border border-[#d97706]/40 text-xs font-semibold px-3 py-1.5 rounded-full">
-                <span>🏆</span>
-                <span>Cấp độ: THCS</span>
+        <!-- MOBILE HEADER -->
+        <div class="md:hidden flex justify-between items-center mb-6 pb-4 border-b border-slate-700">
+            <h1 class="font-bold text-xl text-blue-400">ZAL-CHEM</h1>
+            <div class="flex gap-2 text-sm">
+                <button onclick="switchTab('practice')" class="p-2 bg-slate-800 rounded">Luyện tập</button>
+                <button onclick="switchTab('exam')" class="p-2 bg-slate-800 rounded">Kỳ thi</button>
             </div>
         </div>
 
-        <!-- Khung câu hỏi -->
-        <div class="bg-[#182238] rounded-xl p-6 border border-slate-700/50">
-            <div class="flex justify-between items-center mb-6">
-                <span id="grade-badge" class="bg-[#1e3a8a]/60 text-[#60a5fa] border border-[#3b82f6]/30 text-xs px-3 py-1 rounded-md font-semibold">
-                    Lớp 8
-                </span>
-                <span id="question-tracker" class="text-slate-400 text-sm font-medium">
-                    Câu 1/3
-                </span>
+        <!-- TAB 1: PROFILE (HỒ SƠ) -->
+        <section id="tab-profile" class="tab-content hidden space-y-6">
+            <h2 class="text-2xl font-bold">Thông Tin Học Sinh</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-[#1e293b] p-6 rounded-2xl border border-slate-700/60 text-center col-span-1">
+                    <div class="w-24 h-24 mx-auto rounded-full bg-blue-600/20 border-2 border-blue-500 flex items-center justify-center text-3xl font-bold text-blue-400 mb-4">
+                        NVA
+                    </div>
+                    <h3 class="text-xl font-bold">Nguyễn Văn A</h3>
+                    <p class="text-slate-400 text-sm mb-4">Mã HS: 20268899</p>
+                    <span class="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-xs px-3 py-1 rounded-full font-medium">Học sinh tích cực</span>
+                </div>
+
+                <div class="bg-[#1e293b] p-6 rounded-2xl border border-slate-700/60 col-span-2 space-y-4">
+                    <h3 class="text-lg font-semibold border-b border-slate-700 pb-2">Chi tiết tài khoản</h3>
+                    <div class="grid grid-cols-2 gap-4 text-sm">
+                        <div>
+                            <p class="text-slate-400">Trường</p>
+                            <p class="font-medium">THPT Chuyên KHTN</p>
+                        </div>
+                        <div>
+                            <p class="text-slate-400">Lớp</p>
+                            <p class="font-medium">12 Hóa 1</p>
+                        </div>
+                        <div>
+                            <p class="text-slate-400">Email</p>
+                            <p class="font-medium">student@zalchem.edu.vn</p>
+                        </div>
+                        <div>
+                            <p class="text-slate-400">Bài tập đã hoàn thành</p>
+                            <p class="font-medium text-blue-400">18 Bài</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: PRACTICE (LUYỆN TẬP) -->
+        <section id="tab-practice" class="tab-content hidden space-y-6">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h2 class="text-2xl font-bold">Danh Sách Bài Luyện Tập</h2>
+                    <p class="text-slate-400 text-sm">Chọn chủ đề để bắt đầu làm bài ngẫu nhiên từ 1 - 20 câu</p>
+                </div>
             </div>
 
-            <!-- Nội dung câu hỏi -->
-            <h2 id="question-title" class="text-lg sm:text-xl font-bold text-slate-100 mb-8 leading-relaxed">
-                <!-- Nội dung được nạp qua JS -->
-            </h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <!-- Card Luyện tập 1 -->
+                <div class="bg-[#1e293b] p-6 rounded-2xl border border-slate-700/60 hover:border-blue-500/50 transition flex justify-between items-center">
+                    <div>
+                        <span class="text-xs bg-blue-500/10 text-blue-400 px-2.5 py-1 rounded-md font-medium">Lớp 12</span>
+                        <h3 class="text-lg font-bold mt-2">Este & Lipit - Cơ bản</h3>
+                        <p class="text-slate-400 text-sm mt-1"><i class="fa-regular fa-clock"></i> 10 câu hỏi • Không giới hạn giờ</p>
+                    </div>
+                    <button onclick="startQuiz(10, 'Este & Lipit')" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-xl text-sm font-semibold transition">Bắt đầu</button>
+                </div>
 
-            <!-- Các ô chọn đáp án -->
-            <div id="options-grid" class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <!-- Nút đáp án nạp qua JS -->
+                <!-- Card Luyện tập 2 -->
+                <div class="bg-[#1e293b] p-6 rounded-2xl border border-slate-700/60 hover:border-blue-500/50 transition flex justify-between items-center">
+                    <div>
+                        <span class="text-xs bg-indigo-500/10 text-indigo-400 px-2.5 py-1 rounded-md font-medium">Tổng hợp</span>
+                        <h3 class="text-lg font-bold mt-2">Cân Bằng Hóa Học & Ôn Tập</h3>
+                        <p class="text-slate-400 text-sm mt-1"><i class="fa-regular fa-clock"></i> 5 câu hỏi • Luyện nhanh</p>
+                    </div>
+                    <button onclick="startQuiz(5, 'Cân Bằng Hóa Học')" class="bg-blue-600 hover:bg-blue-500 px-4 py-2 rounded-xl text-sm font-semibold transition">Bắt đầu</button>
+                </div>
             </div>
-        </div>
+        </section>
 
-        <!-- Thanh điều hướng câu hỏi -->
-        <div class="flex justify-between items-center mt-6">
-            <button id="prev-btn" onclick="changeQuestion(-1)" class="px-4 py-2 rounded-lg bg-slate-800 text-slate-300 hover:bg-slate-700 disabled:opacity-30 disabled:cursor-not-allowed text-sm font-medium transition">
-                ← Câu trước
-            </button>
-            <button id="next-btn" onclick="changeQuestion(1)" class="px-4 py-2 rounded-lg bg-blue-600 hover:bg-blue-500 text-white text-sm font-medium transition">
-                Câu tiếp →
-            </button>
-        </div>
+        <!-- TAB 3: EXAM (KỲ THI) -->
+        <section id="tab-exam" class="tab-content hidden space-y-6">
+            <h2 class="text-2xl font-bold">Kỳ Thi & Kiểm Tra Tốc Độ</h2>
+            <div class="bg-gradient-to-r from-purple-900/40 to-blue-900/40 p-6 rounded-2xl border border-purple-500/30">
+                <div class="flex flex-col md:flex-row justify-between md:items-center gap-4">
+                    <div>
+                        <span class="bg-amber-500/20 text-amber-300 text-xs px-3 py-1 rounded-full border border-amber-500/30 font-semibold">Đang diễn ra</span>
+                        <h3 class="text-xl font-bold mt-2">Đề Thi Thử THPT Quốc Gia - 20 Câu Tổng Hợp</h3>
+                        <p class="text-slate-300 text-sm mt-1">Số lượng: 20 câu hỏi full dạng bài • Thời gian làm bài tính điểm</p>
+                    </div>
+                    <button onclick="startQuiz(20, 'Đề Thi Thử THPT QG')" class="bg-purple-600 hover:bg-purple-500 px-6 py-3 rounded-xl font-bold transition text-white shadow-lg shadow-purple-600/30">
+                        Vào Thi Ngay
+                    </button>
+                </div>
+            </div>
+        </section>
 
-    </div>
+        <!-- TAB 4: SCORES (BẢNG ĐIỂM) -->
+        <section id="tab-scores" class="tab-content hidden space-y-6">
+            <h2 class="text-2xl font-bold">Lịch Sử & Bảng Điểm</h2>
+            <div class="bg-[#1e293b] rounded-2xl border border-slate-700/60 overflow-hidden">
+                <table class="w-full text-left text-sm">
+                    <thead class="bg-slate-800/80 text-slate-400 border-b border-slate-700">
+                        <tr>
+                            <th class="p-4">Tên bài luyện / thi</th>
+                            <th class="p-4">Số câu</th>
+                            <th class="p-4">Số câu đúng</th>
+                            <th class="p-4">Điểm số</th>
+                            <th class="p-4">Trạng thái</th>
+                        </tr>
+                    </thead>
+                    <tbody id="scores-history-body" class="divide-y divide-slate-700/50">
+                        <!-- Nạp dữ liệu qua JS -->
+                        <tr>
+                            <td class="p-4 font-medium">Este & Lipit - Cơ bản</td>
+                            <td class="p-4">10</td>
+                            <td class="p-4 text-emerald-400">9/10</td>
+                            <td class="p-4 font-bold text-blue-400">9.0</td>
+                            <td class="p-4"><span class="bg-emerald-500/10 text-emerald-400 text-xs px-2 py-1 rounded">Hoàn thành</span></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
 
+        <!-- QUIZ MODAL CONTAINER (GIAO DIỆN LÀM BÀI CÂU HỎI 1-20 CÂU) -->
+        <section id="quiz-container" class="hidden space-y-6">
+            <!-- Header làm bài -->
+            <div class="flex justify-between items-center bg-[#1e293b] p-4 rounded-xl border border-slate-700">
+                <div>
+                    <h3 id="quiz-title" class="font-bold text-lg text-blue-400">Bài Luyện Tập</h3>
+                    <p id="quiz-progress-text" class="text-xs text-slate-400">Câu 1 / 10</p>
+                </div>
+                <button onclick="exitQuiz()" class="text-xs bg-slate-800 hover:bg-slate-700 px-3 py-1.5 rounded-lg border border-slate-600">Thoát</button>
+            </div>
+
+            <!-- Khung hiển thị câu hỏi -->
+            <div class="bg-[#1e293b] p-6 rounded-2xl border border-slate-700 space-y-6">
+                <h4 id="question-text" class="text-lg font-semibold leading-relaxed">
+                    <!-- Nội dung câu hỏi -->
+                </h4>
+
+                <div id="options-container" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Các đáp án A, B, C, D -->
+                </div>
+            </div>
+
+            <!-- Thanh điều hướng làm bài -->
+            <div class="flex justify-between items-center">
+                <button id="btn-prev" onclick="navQuestion(-1)" class="px-4 py-2 bg-slate-800 hover:bg-slate-700 rounded-xl text-sm font-medium disabled:opacity-30">← Câu trước</button>
+                <button id="btn-next" onclick="navQuestion(1)" class="px-5 py-2 bg-blue-600 hover:bg-blue-500 rounded-xl text-sm font-semibold">Câu tiếp →</button>
+                <button id="btn-submit" onclick="submitQuiz()" class="hidden px-6 py-2 bg-emerald-600 hover:bg-emerald-500 rounded-xl text-sm font-bold text-white">Nộp Bài</button>
+            </div>
+        </section>
+
+        <!-- RESULT & REVIEW MODAL (BẢNG XEM SAI Ở ĐÂU VÀ GIẢI THÍCH) -->
+        <section id="result-container" class="hidden space-y-6">
+            <!-- Summary Card -->
+            <div class="bg-[#1e293b] p-6 rounded-2xl border border-slate-700 text-center space-y-4">
+                <div class="w-20 h-20 mx-auto rounded-full bg-blue-600/20 border-2 border-blue-500 flex items-center justify-center">
+                    <span id="final-score" class="text-3xl font-extrabold text-blue-400">0.0</span>
+                </div>
+                <h2 class="text-2xl font-bold">KẾT QUẢ BÀI LÀM</h2>
+                <p id="result-summary" class="text-slate-300 text-sm">Bạn đã trả lời đúng 0 / 0 câu hỏi</p>
+                <button onclick="switchTab('practice')" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 rounded-xl font-bold text-sm">Quay về danh sách</button>
+            </div>
+
+            <!-- Review Chi Tiết Tất Cả Các Câu Đúng / Sai -->
+            <div class="space-y-4">
+                <h3 class="text-xl font-bold flex items-center gap-2">
+                    <i class="fa-solid fa-list-check text-blue-400"></i> Bảng Xem Lại Chi Tiết
+                </h3>
+                <div id="review-list" class="space-y-4">
+                    <!-- Nạp chi tiết câu trả lời + lời giải tại đây -->
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- JAVASCRIPT LOGIC -->
     <script>
-        // Dữ liệu bộ câu hỏi
-        const quizData = [
-            {
-                grade: "Lớp 8",
-                question: "Kết quả của hằng đẳng thức $(x + 3)^2$ là gì?",
-                options: [
-                    "A. $x^2 + 9$",
-                    "B. $x^2 + 6x + 9$",
-                    "C. $x^2 + 3x + 9$",
-                    "D. $x^2 + 6x + 6$"
-                ],
-                correctIndex: 1
-            },
-            {
-                grade: "Lớp 8",
-                question: "Phân tích đa thức $x^2 - 4$ thành nhân tử:",
-                options: [
-                    "A. $(x - 2)^2$",
-                    "B. $(x + 2)^2$",
-                    "C. $(x - 2)(x + 2)$",
-                    "D. $x(x - 4)$"
-                ],
-                correctIndex: 2
-            },
-            {
-                grade: "Lớp 9",
-                question: "Căn bậc hai số học của $16$ là:",
-                options: [
-                    "A. $4$",
-                    "B. $-4$",
-                    "C. $\\pm 4$",
-                    "D. $256$"
-                ],
-                correctIndex: 0
-            }
+        // Kho câu hỏi mẫu (dạng toán/hóa hỗ trợ công thức LaTeX)
+        const questionBank = [
+            { question: "Hợp chất nào sau đây thuộc loại Este?", options: ["A. $CH_3COOH$", "B. $HCOOCH_3$", "C. $C_2H_5OH$", "D. $CH_3CHO$"], answer: 1, explain: "$HCOOCH_3$ (Methyl formate) có nhóm chức $-COO-$ nên thuộc loại este." },
+            { question: "Công thức phân tử tổng quát của este no, đơn chức, mạch hở là gì?", options: ["A. $C_nH_{2n}O_2\\ (n \\ge 2)$", "B. $C_nH_{2n-2}O_2$", "C. $C_nH_{2n+2}O$", "D. $C_nH_{2n}O$"], answer: 0, explain: Este no, đơn chức, mạch hở có công thức $C_nH_{2n}O_2$ với $n \\ge 2$." },
+            { question: "Thủy phân $HCOOCH_3$ trong dung dịch $NaOH$ thu được muối nào?", options: ["A. $CH_3COONa$", "B. $HCOONa$", "C. $C_2H_5ONa$", "D. $CH_3ONa$"], answer: 1, explain: $HCOOCH_3 + NaOH \\rightarrow HCOONa + CH_3OH$." },
+            { question: "Kết quả của hằng đẳng thức $(x + 3)^2$ là gì?", options: ["A. $x^2 + 9$", "B. $x^2 + 6x + 9$", "C. $x^2 + 3x + 9$", "D. $x^2 + 6x + 6$"], answer: 1, explain: Khai triển hằng đẳng thức $(a+b)^2 = a^2 + 2ab + b^2$ ta có $(x+3)^2 = x^2 + 6x + 9$." },
+            { question: "Số phức $z = 3 + 4i$ có phần ảo bằng bao nhiêu?", options: ["A. $3$", "B. $4$", "C. $4i$", "D. $-4$"], answer: 1, explain: Số phức có dạng $a + bi$, trong đó phần thực là $a=3$ và phần ảo là $b=4$." },
+            { question: "Chất nào sau đây làm đổi màu quỳ tím thành đỏ?", options: ["A. $CH_3COOH$", "B. $C_2H_5OH$", "C. $NaOH$", "D. $NaCl$"], answer: 0, explain: $CH_3COOH$ là axit axetic có tính axit nên làm quỳ tím hóa đỏ." },
+            { question: "Kim loại nào sau đây dẫn điện tốt nhất?", options: ["A. Nhôm ($Al$)", "B. Đồng ($Cu$)", "C. Bạc ($Ag$)", "D. Vàng ($Au$)"], answer: 2, explain: Bạc ($Ag$) là kim loại có khả năng dẫn điện và dẫn nhiệt tốt nhất." },
+            { question: "Phương trình $x^2 - 4 = 0$ có nghiệm là:", options: ["A. $x = 2$", "B. $x = -2$", "C. $x = \\pm 2$", "D. $x = 4$"], answer: 2, explain: $x^2 = 4 \\Rightarrow x = \\pm 2$." }
         ];
 
-        let currentIndex = 0;
+        // Biến trạng thái ứng dụng
+        let activeQuestions = [];
+        let userAnswers = [];
+        let currentQIndex = 0;
+        let currentQuizName = "";
 
-        function renderQuestion() {
-            const currentQuiz = quizData[currentIndex];
+        // Chuyển Tab Navigation
+        function switchTab(tabName) {
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById('quiz-container').classList.add('hidden');
+            document.getElementById('result-container').classList.add('hidden');
+            
+            document.getElementById(`tab-${tabName}`).classList.remove('hidden');
 
-            // Cập nhật thông tin text
-            document.getElementById("grade-badge").innerText = currentQuiz.grade;
-            document.getElementById("question-tracker").innerText = `Câu ${currentIndex + 1}/${quizData.length}`;
-            document.getElementById("question-title").innerHTML = currentQuiz.question;
+            // Cập nhật highlight menu
+            document.querySelectorAll('nav button').forEach(btn => btn.classList.remove('bg-slate-800', 'text-blue-400'));
+            const activeBtn = document.getElementById(`nav-${tabName}`);
+            if(activeBtn) activeBtn.classList.add('bg-slate-800', 'text-blue-400');
+        }
 
-            // Cập nhật trạng thái nút
-            document.getElementById("prev-btn").disabled = currentIndex === 0;
-            document.getElementById("next-btn").innerText = currentIndex === quizData.length - 1 ? "Hoàn thành" : "Câu tiếp →";
+        // Bắt đầu làm bài thi/luyện tập (1 - 20 câu)
+        function startQuiz(count, name) {
+            currentQuizName = name;
+            activeQuestions = [];
+            
+            // Lấy ngẫu nhiên câu hỏi theo số lượng yêu cầu
+            for (let i = 0; i < count; i++) {
+                activeQuestions.push(questionBank[i % questionBank.length]);
+            }
 
-            // Tạo các ô đáp án
-            const container = document.getElementById("options-grid");
-            container.innerHTML = "";
+            userAnswers = new Array(count).fill(null);
+            currentQIndex = 0;
 
-            currentQuiz.options.forEach((optText, idx) => {
-                const btn = document.createElement("button");
-                btn.className = "w-full text-left p-4 rounded-xl bg-[#131b2e] hover:bg-[#1f2c48] border border-slate-700/80 hover:border-slate-500 transition duration-150 text-slate-200 font-medium cursor-pointer";
-                btn.innerHTML = optText;
-                
-                btn.onclick = () => {
-                    if (idx === currentQuiz.correctIndex) {
-                        alert("Chính xác! 🎉");
-                    } else {
-                        alert("Chưa đúng, thử lại nhé!");
-                    }
-                };
+            // Chuyển sang giao diện Quiz
+            document.querySelectorAll('.tab-content').forEach(el => el.classList.add('hidden'));
+            document.getElementById('result-container').classList.add('hidden');
+            document.getElementById('quiz-container').classList.remove('hidden');
 
-                container.appendChild(btn);
+            document.getElementById('quiz-title').innerText = name;
+            renderCurrentQuestion();
+        }
+
+        // Render câu hỏi hiện tại
+        function renderCurrentQuestion() {
+            const q = activeQuestions[currentQIndex];
+            document.getElementById('quiz-progress-text').innerText = `Câu ${currentQIndex + 1} / ${activeQuestions.length}`;
+            document.getElementById('question-text').innerHTML = `${currentQIndex + 1}. ${q.question}`;
+
+            const optionsBox = document.getElementById('options-container');
+            optionsBox.innerHTML = '';
+
+            q.options.forEach((opt, idx) => {
+                const isSelected = userAnswers[currentQIndex] === idx;
+                const btn = document.createElement('button');
+                btn.className = `w-full text-left p-4 rounded-xl border transition flex items-center justify-between ${
+                    isSelected ? 'bg-blue-600/20 border-blue-500 text-blue-300' : 'bg-slate-800/60 border-slate-700 hover:border-slate-500 text-slate-200'
+                }`;
+                btn.innerHTML = `<span>${opt}</span> ${isSelected ? '<i class="fa-solid fa-circle-check text-blue-400"></i>' : ''}`;
+                btn.onclick = () => selectAnswer(idx);
+                optionsBox.appendChild(btn);
             });
 
-            // Gọi KaTeX để render toán sau khi chèn HTML xong
+            // Cập nhật các nút Next/Prev/Submit
+            document.getElementById('btn-prev').disabled = currentQIndex === 0;
+            if (currentQIndex === activeQuestions.length - 1) {
+                document.getElementById('btn-next').classList.add('hidden');
+                document.getElementById('btn-submit').classList.remove('hidden');
+            } else {
+                document.getElementById('btn-next').classList.remove('hidden');
+                document.getElementById('btn-submit').classList.add('hidden');
+            }
+
+            renderMath();
+        }
+
+        function selectAnswer(optionIdx) {
+            userAnswers[currentQIndex] = optionIdx;
+            renderCurrentQuestion();
+        }
+
+        function navQuestion(step) {
+            currentQIndex += step;
+            renderCurrentQuestion();
+        }
+
+        function exitQuiz() {
+            if (confirm("Bạn có chắc chắn muốn thoát? Kết quả bài làm sẽ không được lưu.")) {
+                switchTab('practice');
+            }
+        }
+
+        // Nộp bài & Hiển thị kết quả chi tiết
+        function submitQuiz() {
+            let correctCount = 0;
+            activeQuestions.forEach((q, idx) => {
+                if (userAnswers[idx] === q.answer) correctCount++;
+            });
+
+            const score = ((correctCount / activeQuestions.length) * 10).toFixed(1);
+
+            // Hiển thị kết quả tổng quan
+            document.getElementById('final-score').innerText = score;
+            document.getElementById('result-summary').innerText = `Bạn đã trả lời đúng ${correctCount} / ${activeQuestions.length} câu hỏi.`;
+
+            // Render danh sách xem lại câu sai/đúng
+            const reviewList = document.getElementById('review-list');
+            reviewList.innerHTML = '';
+
+            activeQuestions.forEach((q, idx) => {
+                const userAns = userAnswers[idx];
+                const isCorrect = userAns === q.answer;
+
+                const card = document.createElement('div');
+                card.className = `p-5 rounded-2xl border ${isCorrect ? 'bg-emerald-950/20 border-emerald-500/40' : 'bg-rose-950/20 border-rose-500/40'} space-y-3`;
+
+                card.innerHTML = `
+                    <div class="flex items-start justify-between gap-4">
+                        <h4 class="font-semibold text-slate-100">Câu ${idx + 1}: ${q.question}</h4>
+                        <span class="text-xs font-bold px-2.5 py-1 rounded-md shrink-0 ${isCorrect ? 'bg-emerald-500/20 text-emerald-400' : 'bg-rose-500/20 text-rose-400'}">
+                            ${isCorrect ? 'Đúng' : 'Sai'}
+                        </span>
+                    </div>
+                    <div class="text-sm space-y-1">
+                        <p class="${userAns === q.answer ? 'text-emerald-400' : 'text-rose-400'}">
+                            • Bạn chọn: ${userAns !== null ? q.options[userAns] : 'Chưa chọn'}
+                        </p>
+                        ${!isCorrect ? `<p class="text-emerald-400">• Đáp án đúng: ${q.options[q.answer]}</p>` : ''}
+                    </div>
+                    <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-800 text-xs text-slate-300">
+                        <span class="font-bold text-amber-400"><i class="fa-solid fa-lightbulb"></i> Lời giải:</span> ${q.explain}
+                    </div>
+                `;
+
+                reviewList.appendChild(card);
+            });
+
+            // Thêm kết quả vào bảng điểm lịch sử
+            addScoreHistory(currentQuizName, activeQuestions.length, correctCount, score);
+
+            // Chuyển màn hình
+            document.getElementById('quiz-container').classList.add('hidden');
+            document.getElementById('result-container').classList.remove('hidden');
+
+            renderMath();
+        }
+
+        // Thêm kết quả bài thi vào Bảng điểm
+        function addScoreHistory(name, total, correct, score) {
+            const tbody = document.getElementById('scores-history-body');
+            const row = document.createElement('tr');
+            row.innerHTML = `
+                <td class="p-4 font-medium">${name}</td>
+                <td class="p-4">${total}</td>
+                <td class="p-4 text-emerald-400">${correct}/${total}</td>
+                <td class="p-4 font-bold text-blue-400">${score}</td>
+                <td class="p-4"><span class="bg-emerald-500/10 text-emerald-400 text-xs px-2 py-1 rounded">Vừa xong</span></td>
+            `;
+            tbody.insertBefore(row, tbody.firstChild);
+        }
+
+        // Trigger KaTeX render công thức toán/hóa
+        function renderMath() {
             if (window.renderMathInElement) {
                 renderMathInElement(document.body, {
                     delimiters: [
@@ -155,18 +428,10 @@
             }
         }
 
-        function changeQuestion(step) {
-            currentIndex += step;
-            if (currentIndex >= quizData.length) {
-                alert("Bạn đã hoàn thành tất cả câu hỏi!");
-                currentIndex = 0;
-            }
-            renderQuestion();
-        }
-
-        // Tải câu hỏi lần đầu tiên
+        // Tải trang mặc định hiển thị Tab Profile
         document.addEventListener("DOMContentLoaded", () => {
-            setTimeout(renderQuestion, 50);
+            switchTab('profile');
+            setTimeout(renderMath, 200);
         });
     </script>
 </body>
